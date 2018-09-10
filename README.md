@@ -8,4 +8,4 @@ To launch the process execute
 ```
 
 and *command* is executed everytime the program notices that
-*file* has changed.
+a file in *file* has changed.
