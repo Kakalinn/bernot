@@ -14,7 +14,8 @@ int main(int argc, char** argv)
 	{
 		printf("%s: missing inputs\n", argv[0]);
 		printf("Usage: %s file command\n", argv[0]);
-		printf("where 'file' is the file to watch and 'command'\n");
+		printf("where 'file' is a file including all\n");
+		printf("the names of the files to watch and 'command'\n");
 		printf("is what is run when 'file' is changed.\n");
 		return 3;
 	}
