@@ -32,6 +32,10 @@ int main(int argc, char** argv)
 		printf("where 'file' is a file including all\n");
 		printf("the names of the files to watch and 'command'\n");
 		printf("is what is run when 'file' is changed.\n");
+		printf("\n");
+		printf("Flags:\n");
+		printf("  -c     Ignores all files that can't be accessed.\n");
+		printf("  -p     Prints out which files are being watched.\n");
 		return 3;
 	}
 
