@@ -24,6 +24,7 @@ int main(int argc, char** argv)
 	struct stat file_stat;
 	int ignore_access_errors = 0;
 	int print_all_file_names = 0;
+	int wait_time = DELAY;
 
 	if (argc < 3)
 	{
@@ -34,8 +35,9 @@ int main(int argc, char** argv)
 		printf("is what is run when 'file' is changed.\n");
 		printf("\n");
 		printf("Flags:\n");
-		printf("  -c     Ignores all files that can't be accessed.\n");
-		printf("  -p     Prints out which files are being watched.\n");
+		printf("  -c         Ignores all files that can't be accessed.\n");
+		printf("  -p         Prints out which files are being watched.\n");
+		printf("  -d<num>    Checks fiels for updates every <num> seconds.\n");
 		return 3;
 	}
 
@@ -48,6 +50,7 @@ int main(int argc, char** argv)
 
 	inppar_fetchb(argc, argv, "-p", &print_all_file_names);
 	inppar_fetchb(argc, argv, "-c", &ignore_access_errors);
+	inppar_fetchi(argc, argv, "-d", &wait_time);
 
 	char* buffer = malloc(sizeof(char)*1024);
 
@@ -244,7 +247,7 @@ int main(int argc, char** argv)
 			system(argv[2]);
 		}
 
-		sleep(DELAY);
+		sleep(wait_time);
 	}
 
 	while (head != NULL)
