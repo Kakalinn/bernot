@@ -11,6 +11,8 @@
 #define DELAY 1
 #endif
 
+#define printf(...) if(background == 1) printf(__VA_ARGS__)
+
 typedef struct bnss
 {
 	time_t last;
@@ -25,6 +27,7 @@ int main(int argc, char** argv)
 	int ignore_access_errors = 0;
 	int print_all_file_names = 0;
 	int wait_time = DELAY;
+	int background = 0;
 
 	if (argc < 3)
 	{
@@ -38,6 +41,7 @@ int main(int argc, char** argv)
 		printf("  -c         Ignores all files that can't be accessed.\n");
 		printf("  -p         Prints out which files are being watched.\n");
 		printf("  -d<num>    Checks fiels for updates every <num> seconds.\n");
+		printf("  -b         Executes in the background.\n");
 		return 3;
 	}
 
@@ -51,6 +55,7 @@ int main(int argc, char** argv)
 	inppar_fetchb(argc, argv, "-p", &print_all_file_names);
 	inppar_fetchb(argc, argv, "-c", &ignore_access_errors);
 	inppar_fetchi(argc, argv, "-d", &wait_time);
+	inppar_fetchb(argc, argv, "-b", &background);
 
 	char* buffer = malloc(sizeof(char)*1024);
 
@@ -183,17 +188,24 @@ int main(int argc, char** argv)
 			}
 			else
 			{
-				if (stat(argv[1], &file_stat))
+				if (stat(body->fn, &file_stat))
 				{
 					perror("stat");
 					return 8;
 				}
 
-				body->next->last = file_stat.st_mtime;
+				body->last = file_stat.st_mtime;
 				body = body->next;
 			}
 		}
 	}
+	if (stat(body->fn, &file_stat))
+	{
+		perror("stat");
+		return 8;
+	}
+
+	body->last = file_stat.st_mtime;
 
 	printf("bns is running on %d files", cnt);
 	if (print_all_file_names == 1)
@@ -211,13 +223,24 @@ int main(int argc, char** argv)
 		printf(".\n");
 	}
 
+	if (background == 1)
+	{
+		pid_t pid = fork();
+		if (pid != 0)
+		{
+			printf("Forked to pid %d\n", pid);
+			return 0;
+		}
+	}
+
+
 	while (1)
 	{
 		body = head;
 		while (body != NULL)
 		{
 			err = stat(body->fn, &file_stat);
-			if (err != 0)
+			if (background == 0 && err != 0)
 			{
 				perror("stat");
 			}
@@ -235,7 +258,7 @@ int main(int argc, char** argv)
 			while (body != NULL)
 			{
 				err = stat(body->fn, &file_stat);
-				if (err != 0)
+				if (background == 0 && err != 0)
 				{
 					perror("stat");
 				}
