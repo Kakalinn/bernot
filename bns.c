@@ -226,7 +226,7 @@ int main(int argc, char** argv)
 		pid_t pid = fork();
 		if (pid != 0)
 		{
-			printf("Forked to pid [%d[\n", pid);
+			printf("Forked to pid [%d]\n", pid);
 			return 0;
 		}
 	}
