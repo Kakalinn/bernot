@@ -85,7 +85,7 @@ int main(int argc, char** argv)
 				body->next = NULL;
 			}
 			cnt++;
-			body->fn = malloc(sizeof(char)*i);
+			body->fn = malloc(sizeof(char)*(i + 1));
 			strcpy(body->fn, buffer);
 			c = fgetc(fp);
 			i = 0;
@@ -98,6 +98,7 @@ int main(int argc, char** argv)
 	body = head;
 
 	free(buffer);
+	buffer = NULL;
 
 	while (head != NULL && access(head->fn, F_OK) != 0)
 	{
